@@ -816,6 +816,14 @@ static int bq25790_battery_get_property(struct power_supply *psy,
 
 		val->intval = ret;
 		break;
+	case POWER_SUPPLY_PROP_CAPACITY:
+		if(state.vbat_adc > 7200000) {
+			val->intval = (state.vbat_adc - 7200000) * 100 \
+				      / (8400000 - 7200000);
+		} else {
+			val->intval = 0;
+		}
+		break;
 	default:
 		return -EINVAL;
 	}
@@ -891,6 +899,7 @@ static enum power_supply_property bq25790_battery_props[] = {
 	POWER_SUPPLY_PROP_PRECHARGE_CURRENT,
 	POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT,
 	POWER_SUPPLY_PROP_TEMP,
+	POWER_SUPPLY_PROP_CAPACITY,
 };
 
 static char *bq25790_charger_supplied_to[] = {
